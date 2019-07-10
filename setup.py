@@ -180,7 +180,7 @@ CheckDeps()
 
 setup(
     name='gradient_decode_dicom',
-    version='0.0.3',
+    version='0.0.4',
     description=(
         'Gradient Decode DICOM is a dicom image and tag reader op for TensorFlow'),
     author='Marcelo Lerendegui',
