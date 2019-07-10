@@ -1,3 +1,4 @@
 a.out
 dist/
+build/
 gradient_decode_dicom.egg-info/

@@ -255,6 +255,14 @@ public:
             *out_value = (float)(in_value);
     }
 
+    void uint64_to_t(uint64 in_value, unsigned int n_bits, Eigen::half *out_value)
+    {
+        if (scale == "auto")
+            *out_value = static_cast<Eigen::half>((double)(in_value) / (double)((1ULL << n_bits) - 1));
+        else if (scale == "preserve")
+            *out_value = static_cast<Eigen::half>(in_value);
+    }
+
     void uint64_to_t(uint64 in_value, unsigned int n_bits, double *out_value)
     {
         if (scale == "auto")
@@ -279,6 +287,7 @@ REGISTER_DECODE_DICOM_IMAGE_CPU(uint16);
 REGISTER_DECODE_DICOM_IMAGE_CPU(uint32);
 REGISTER_DECODE_DICOM_IMAGE_CPU(uint64);
 REGISTER_DECODE_DICOM_IMAGE_CPU(float);
+REGISTER_DECODE_DICOM_IMAGE_CPU(Eigen::half);
 REGISTER_DECODE_DICOM_IMAGE_CPU(double);
 
 #undef REGISTER_DECODE_DICOM_IMAGE_CPU

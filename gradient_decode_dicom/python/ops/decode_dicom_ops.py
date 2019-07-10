@@ -27,8 +27,8 @@ decode_dicom_ops = load_library.load_op_library(
     resource_loader.get_path_to_datafile('_decode_dicom_ops.so')
 )
 
-decode_dicom_data = decode_dicom_ops.DecodeDICOMData
-decode_dicom_image = decode_dicom_ops.DecodeDICOMImage
+decode_dicom_data = decode_dicom_ops.decode_dicom_data
+decode_dicom_image = decode_dicom_ops.decode_dicom_image
 
 
 class tags():
