@@ -96,8 +96,9 @@ deps_other = [
 
 
 def get_ext_filename_without_platform_suffix(filename):
+    print(filename)
     name, ext = os.path.splitext(filename)
-    ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
+    ext_suffix = sysconfig.get_config_var('SO')
 
     if ext_suffix == ext:
         return filename
@@ -111,59 +112,61 @@ def get_ext_filename_without_platform_suffix(filename):
         return name[:idx] + ext
 
 
-class BuildExtWithoutPlatformSuffix(build_ext):
+class BuildExtWithoutPlatformSuffix(build_ext, object):
     def get_ext_filename(self, ext_name):
-        filename = super().get_ext_filename(ext_name)
+        filename = super(BuildExtWithoutPlatformSuffix,
+                         self).get_ext_filename(ext_name)
         return get_ext_filename_without_platform_suffix(filename)
 
 
 def CheckDeps():
-    print("Checking OS Compatibility")
-    print("{} ........".format(platform.system()), end=" ")
-    if platform.system() == "Windows":
-        raise RuntimeError("ERROR: Windows not supported")
-    print(" OK")
+    with open(os.devnull, 'w') as devnull:
+        print("Checking OS Compatibility")
+        print("{} ........".format(platform.system()), end=" ")
+        if platform.system() == "Windows":
+            raise RuntimeError("ERROR: Windows not supported")
+        print(" OK")
 
-    print("Checking Library Dependencies")
-    print("Checking DCMTK")
-    for lib in deps_dcmtk:
-        print("Library lib{} installed ........".format(lib[2::]), end=" ")
-        try:
-            s = subprocess.check_output(
-                ['g++ test.cc {}'.format(lib)],
-                stderr=subprocess.DEVNULL,
-                shell=True
-            )
-        except OSError:
-            print(
-                "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
-                    lib)
-            )
-            raise RuntimeError(
-                "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
-                    lib)
-            )
-        print("OK")
+        print("Checking Library Dependencies")
+        print("Checking DCMTK")
+        for lib in deps_dcmtk:
+            print("Library lib{} installed ........".format(lib[2::]), end=" ")
+            try:
+                s = subprocess.check_output(
+                    ['g++ test.cc {}'.format(lib)],
+                    stderr=devnull,
+                    shell=True
+                )
+            except OSError:
+                print(
+                    "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
+                        lib)
+                )
+                raise RuntimeError(
+                    "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
+                        lib)
+                )
+            print("OK")
 
-    print("Checking other libs")
-    for lib in deps_other:
-        print("Library lib{} installed ........".format(lib[2::]), end=" ")
-        try:
-            s = subprocess.check_output(
-                ['g++ test.cc {}'.format(lib)],
-                stderr=subprocess.DEVNULL,
-                shell=True
-            )
-        except OSError:
-            print(
-                "ERROR: Missing required library: {}".format(
-                    lib)
-            )
-            raise RuntimeError(
-                "ERROR: Missing required library: {}".format(
-                    lib)
-            )
-        print("OK")
+        print("Checking other libs")
+        for lib in deps_other:
+            print("Library lib{} installed ........".format(lib[2::]), end=" ")
+            try:
+                s = subprocess.check_output(
+                    ['g++ test.cc {}'.format(lib)],
+                    stderr=devnull,
+                    shell=True
+                )
+            except OSError:
+                print(
+                    "ERROR: Missing required library: {}".format(
+                        lib)
+                )
+                raise RuntimeError(
+                    "ERROR: Missing required library: {}".format(
+                        lib)
+                )
+            print("OK")
 
 
 class BinaryDistribution(Distribution):
