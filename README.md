@@ -14,8 +14,8 @@ Decode DICOM contains two Tensorflow Operations that allow reading information f
 #### Inputs
 
 ##### contents:
-        * Description: byte string with the file bytes. Use tf.io.read_file to read the file contents into a string.
-        * Type: string
+    * Description: byte string with the file bytes. Use tf.io.read_file to read the file contents into a string.
+    * Type: string
 
 #### Attributes
 
@@ -54,6 +54,6 @@ Decode DICOM contains two Tensorflow Operations that allow reading information f
 
 ## Installation
 
-    ```bash
-        pip install gradient-decode-dicom
-    ```
+```bash
+    pip install gradient-decode-dicom
+```

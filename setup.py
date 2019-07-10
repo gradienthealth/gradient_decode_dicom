@@ -77,7 +77,7 @@ tf_decode_dicom_ext = Extension(
     ]
 )
 
-deps_dcmtk = [
+deps = [
     '-ldcmjpeg',
     '-ldcmjpls',
     '-ldcmdata',
@@ -85,13 +85,20 @@ deps_dcmtk = [
     '-ldcmimage',
     '-loflog',
     '-lofstd',
+    '-lz',
+    '-lpthread',
 ]
 
-deps_other = [
-    '-lz',
-    '-lm',
-    '-lrt',
-    '-lpthread',
+deps_fix = [
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'DCMTK-DEV',
+    'ZLIB',
+    'PTHREAD',
 ]
 
 
@@ -128,8 +135,7 @@ def CheckDeps():
         print(" OK")
 
         print("Checking Library Dependencies")
-        print("Checking DCMTK")
-        for lib in deps_dcmtk:
+        for lib, lib_fix in zip(deps, deps_fix):
             print("Library lib{} installed ........".format(lib[2::]), end=" ")
             try:
                 s = subprocess.check_output(
@@ -137,34 +143,14 @@ def CheckDeps():
                     stderr=devnull,
                     shell=True
                 )
-            except OSError:
+            except:
                 print(
                     "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
-                        lib)
+                        lib_fix)
                 )
                 raise RuntimeError(
                     "ERROR: Missing required library: {}\n TO FIX THIS, INSTALL DCMTK-DEV".format(
-                        lib)
-                )
-            print("OK")
-
-        print("Checking other libs")
-        for lib in deps_other:
-            print("Library lib{} installed ........".format(lib[2::]), end=" ")
-            try:
-                s = subprocess.check_output(
-                    ['g++ test.cc {}'.format(lib)],
-                    stderr=devnull,
-                    shell=True
-                )
-            except OSError:
-                print(
-                    "ERROR: Missing required library: {}".format(
-                        lib)
-                )
-                raise RuntimeError(
-                    "ERROR: Missing required library: {}".format(
-                        lib)
+                        lib_fix)
                 )
             print("OK")
 
@@ -176,13 +162,20 @@ class BinaryDistribution(Distribution):
         return True
 
 
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md')) as f:
+    LONG_DESCRIPTION = f.read()
+
 CheckDeps()
 
 setup(
     name='gradient_decode_dicom',
-    version='0.0.4',
+    version='0.0.5',
     description=(
         'Gradient Decode DICOM is a dicom image and tag reader op for TensorFlow'),
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
+    url='https://github.com/gradienthealth/gradient_decode_dicom',
     author='Marcelo Lerendegui',
     author_email='marcelo@gradienthealth.io',
     # Contained modules and scripts.
