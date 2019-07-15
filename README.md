@@ -43,7 +43,7 @@ A `Tensor` of type `dtype` and the shape is determined by the DICOM file.
 ```python
 gradient_decode_dicom.decode_dicom_data(
     contents,
-    tags= None, tf.uint32
+    tags=None,
     name=None
 )
 ```
